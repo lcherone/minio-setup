@@ -1,0 +1,27 @@
+version: "2"
+
+networks:
+  app-network:
+    ipam:
+      config:
+        - subnet: 10.1.1.0/24
+          gateway: 10.1.1.1
+
+services:
+  s3:
+    image: minio/minio
+    hostname: s3
+    container_name: s3
+    user: root
+    ports:
+      - 9000:9000
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      MINIO_BROWSER: "on"
+    volumes:
+      - ./data:/data
+      #- ./data/.minio.sys/config:/root/.minio
+    networks:
+      - app-network
+    command: server /data/
